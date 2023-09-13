@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const axios = require('axios');
 
 
 const { Pool } = require('pg');
@@ -69,6 +70,22 @@ app.delete("/delete_employee/:id", bodyParser.json(), async (req,res) => {
         console.log(err)
         res.status(400).send(err)
     }
+})
+
+app.get("/employee_api", async (req,res) => {
+    console.log("teste 1")
+    axios.get("https://randomuser.me/api/")
+    .then((response) => {
+        console.log(response.data.results[0].name.first + " " + response.data.results[0].name.last)
+        let person = {}
+        person.name = response.data.results[0].name.first + " " + response.data.results[0].name.last
+        person.role = "Teste"
+        return res.status(200).send(person)
+    })  
+    .catch((err) => {
+        console.log(err)
+        return res.status(400).send(err)
+    })
 })
 
 app.listen(PORT, () => console.log("listening port " + PORT))
