@@ -48,4 +48,15 @@ app.get("/read_employee/:name", bodyParser.json(), async (req,res) => {
     }
 })
 
+app.put("/update_employee", bodyParser.json(), async (req,res) => {
+     const { employee_id, newRole, newName } = req.body
+     try {
+        const change = await pool.query('UPDATE employee SET "role" = $1, "name" = $3 WHERE "employee_id" = $2',[newRole, employee_id, newName])
+        console.log(change)
+        return res.status(200).send(change)
+     } catch(err) {
+        return res.status(400).send(err)
+     }
+})
+
 app.listen(PORT, () => console.log("listening port " + PORT))
