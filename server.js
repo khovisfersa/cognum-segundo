@@ -35,15 +35,17 @@ app.post("/create_employee",bodyParser.json() ,async (req,res)=> {
     }
 })
 
-// app.get("/read_employee", bodyParser.json(), async (req,res) => {
-//     const { query_info } = req.params
-//     try{
-//         let query = "SELECT * FROM employee WHERE employee_id = $1 OR name = $1 OR role = $1"
-//         const employee = await pool.query(query, [query_info])
-//     } catch(err) {
-//         console.log(err)
-//         return res.status(400).send(err)
-//     }
-// })
+app.get("/read_employee/:name", bodyParser.json(), async (req,res) => {
+    const { name } = req.params
+    try{
+        // let query = `SELECT * FROM employee WHERE "employee_id" = $1 OR "name" = $1 OR "role" = $1`
+        const employee = await pool.query('SELECT * FROM employee WHERE "name" = $1', [name])
+        console.log(employee)
+        return res.status(200).send(employee.rows[0])
+    } catch(err) {
+        console.log(err)
+        return res.status(400).send(err)
+    }
+})
 
 app.listen(PORT, () => console.log("listening port " + PORT))
