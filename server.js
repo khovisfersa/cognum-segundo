@@ -59,4 +59,16 @@ app.put("/update_employee", bodyParser.json(), async (req,res) => {
      }
 })
 
+app.delete("/delete_employee/:id", bodyParser.json(), async (req,res) => {
+    const { id } = req.params
+    try {
+        const deleted = await pool.query('DELETE FROM employee WHERE "employee_id" = $1 returning *',[id])
+        console.log(deleted)
+        return res.status(200).send(deleted)
+    } catch(err) {
+        console.log(err)
+        res.status(400).send(err)
+    }
+})
+
 app.listen(PORT, () => console.log("listening port " + PORT))
