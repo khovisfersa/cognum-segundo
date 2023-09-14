@@ -5,7 +5,6 @@ const axios = require('axios');
 
 
 const { Pool } = require('pg');
-const fs = require('fs');
 const app = express();
 require('dotenv').config();
 
