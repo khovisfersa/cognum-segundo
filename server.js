@@ -88,4 +88,34 @@ app.get("/employee_api", async (req,res) => {
     })
 })
 
+app.get("/populate/:number", async (req,res) => {
+    let { number } = req.params
+
+    try {
+        parsed_number = parseInt(number)
+    } catch(err) {
+        parsed_number = 10
+    }
+
+    axios.get(`https://randomuser.me/api/?results=${parsed_number}`)
+    .then(({data}) => {
+        data.results.forEach(async (person) => {
+            console.log(`${person.name.first} ${person.name.last}`)
+            const role = "-"
+            try {
+                const employee = await pool.query('INSERT INTO employee ("name", "role") values ($1, $2) returning employee_id',[person.name.first + " " + person.name.last, role])    
+            } catch (error) {
+                console.log(error)
+            }
+        });
+        return res.status(200).send("Ok")
+    })
+    .catch((err) => {
+        console.log(err)
+        return res.status(400).send(err)
+    })
+})
+
+
+
 app.listen(PORT, () => console.log("listening port " + PORT))
