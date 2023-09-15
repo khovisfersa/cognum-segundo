@@ -8,9 +8,12 @@ const { Pool } = require('pg');
 const app = express();
 require('dotenv').config();
 
+app.use(require('./notification.js'));
+
 app.use(cors({
 	origin: '*'
 }));
+
 
 
 const PORT = process.env.PORT || 3333
@@ -25,8 +28,9 @@ app.post("/create_employee",bodyParser.json() ,async (req,res)=> {
     try {
         const name = req.body.name
         const role = req.body.role
+        const email = req.body.email
 
-        const employee = await pool.query('INSERT INTO employee ("name", "role") values ($1, $2) returning employee_id',[name, role])
+        const employee = await pool.query('INSERT INTO employee ("name", "role", "email") values ($1, $2, $3) returning employee_id',[name, role, email])
         console.log(employee.rows[0].employee_id)
         return res.status(200).send("inserted with id: " + employee.rows[0].employee_id) 
     } catch(err) {
